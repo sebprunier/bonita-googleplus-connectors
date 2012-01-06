@@ -10,7 +10,7 @@ import java.util.List;
 import org.ow2.bonita.connector.core.ConnectorError;
 import org.ow2.bonita.connector.core.ProcessConnector;
 
-public class GetActivity extends ProcessConnector {
+public class ActivitiesGet extends ProcessConnector {
 
 	// Google+ API URLs
 	private static final String GOOGLEPLUS_API_URL = "https://www.googleapis.com/plus/v1/activities/";

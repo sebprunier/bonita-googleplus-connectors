@@ -1,11 +1,11 @@
 <connector>
-  <connectorId>GetActivity</connectorId>
+  <connectorId>ActivitiesGet</connectorId>
   <version>5.0</version>
   <icon>GooglePlus.jpg</icon>
   <categories>
     <category>
       <name>Google+</name>
-	  <icon>GooglePlus.jpg</icon>
+	  <icon>org/bonitasoft/connectors/googleplus/GooglePlus.jpg</icon>
     </category>
   </categories>
   <inputs>

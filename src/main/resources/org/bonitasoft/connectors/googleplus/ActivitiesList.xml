@@ -1,11 +1,11 @@
 <connector>
-  <connectorId>GetProfile</connectorId>
+  <connectorId>ActivitiesList</connectorId>
   <version>5.0</version>
   <icon>GooglePlus.jpg</icon>
   <categories>
     <category>
       <name>Google+</name>
-	  <icon>GooglePlus.jpg</icon>
+	  <icon>org/bonitasoft/connectors/googleplus/GooglePlus.jpg</icon>
     </category>
   </categories>
   <inputs>
@@ -24,6 +24,12 @@
       </parameters>
     </setter>
     <setter>
+      <setterName>setMaxResults</setterName>
+      <parameters>
+        <long>0</long>
+      </parameters>
+    </setter>
+    <setter>
       <setterName>setFields</setterName>
       <parameters>
         <string></string>
@@ -38,7 +44,7 @@
   </outputs>
   <pages>
     <page>
-      <pageId>apikey</pageId>
+      <pageId>apiKey</pageId>
       <widgets>
         <text>
           <labelId>apiKey</labelId>
@@ -49,7 +55,7 @@
       </widgets>
     </page>
     <page>
-      <pageId>userid</pageId>
+      <pageId>userId</pageId>
       <widgets>
         <text>
           <labelId>userId</labelId>
@@ -58,8 +64,14 @@
           <maxChar>40</maxChar>
         </text>
         <text>
-          <labelId>fields</labelId>
+          <labelId>maxResults</labelId>
           <setter reference="/connector/inputs/setter[3]"/>
+          <size>20</size>
+          <maxChar>40</maxChar>
+        </text>
+        <text>
+          <labelId>fields</labelId>
+          <setter reference="/connector/inputs/setter[4]"/>
           <size>20</size>
           <maxChar>40</maxChar>
         </text>

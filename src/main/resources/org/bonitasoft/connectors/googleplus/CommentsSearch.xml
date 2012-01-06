@@ -1,0 +1,20 @@
+<connector>
+  <connectorId>CommentsGSearcht</connectorId>
+  <version>5.0</version>
+  <icon>GooglePlus.jpg</icon>
+  <categories>
+    <category>
+      <name>Google+</name>
+	  <icon>org/bonitasoft/connectors/googleplus/GooglePlus.jpg</icon>
+    </category>
+  </categories>
+  <inputs>
+    <!-- TODO -->
+  </inputs>
+  <outputs>
+    <!-- TODO -->
+  </outputs>
+  <pages>
+    <!-- TODO -->
+  </pages>
+</connector>
