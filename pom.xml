@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>org.bonitasoft.connectors</groupId>
 	<artifactId>googleplus</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
 	<name>GooglePlusConnectors</name>
 	<description>GooglePlus Connectors For Bonita</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.ow2.bonita</groupId>
+			<artifactId>bonita-client</artifactId>
+			<version>5.6.1</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<!-- Repo for org.scannotation:scannotation:1.0.2: -->
+		<repository>
+			<id>jboss-thirdparty-releases</id>
+			<name>JBoss Thirdparty Releases</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+		</repository>
+	</repositories>
+
 </project>
