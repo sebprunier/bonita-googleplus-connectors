@@ -1,55 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.bonitasoft.connectors</groupId>
-	<artifactId>googleplus</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+    <groupId>org.bonitasoft.connectors</groupId>
+    <artifactId>googleplus</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
-	<name>BonitaGooglePlusConnectors</name>
-	<description>GooglePlus Connectors For Bonita</description>
+    <name>BonitaGooglePlusConnectors</name>
+    <description>GooglePlus Connectors For Bonita</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.ow2.bonita</groupId>
-			<artifactId>bonita-client</artifactId>
-			<version>5.6.1</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <!-- Bonita Client -->
+        <dependency>
+            <groupId>org.ow2.bonita</groupId>
+            <artifactId>bonita-client</artifactId>
+            <version>5.6.1</version>
+            <scope>provided</scope>
+        </dependency>
 
-	<build>
+        <!-- Google+ API -->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-plus</artifactId>
+            <version>v1-1.3.0-beta</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<finalName>${project.name}-${project.version}</finalName>
-				</configuration>
-			</plugin>
-		</plugins>
+    <build>
+        <!-- Resources -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/GooglePlus.jpg</include>
+                    <include>**/PeopleGet.*</include>
+                    <include>**/PeopleSearch.*</include>
+                </includes>
+            </resource>
+        </resources>
 
-	</build>
+        <plugins>
+            <!-- Compiler : set java version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <includes>
+                        <include>**/GooglePlusConnector.java</include>
+                        <include>**/PeopleGet.java</include>
+                        <include>**/PeopleSearch.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
 
-	<repositories>
-		<!-- Repo for org.scannotation:scannotation:1.0.2: -->
-		<repository>
-			<id>jboss-thirdparty-releases</id>
-			<name>JBoss Thirdparty Releases</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-		</repository>
-	</repositories>
+            <!-- Jar : set output file name -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <finalName>${project.name}-${project.version}</finalName>
+                </configuration>
+            </plugin>
+
+            <!-- Shade : package Google+ API dependencies into the JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <repositories>
+        <!-- Repo for Google+ API -->
+        <repository>
+            <id>google-api-services</id>
+            <name>Google API Services</name>
+            <url>http://mavenrepo.google-api-java-client.googlecode.com/hg</url>
+        </repository>
+
+        <!-- Repo for org.scannotation:scannotation:1.0.2: -->
+        <repository>
+            <id>jboss-thirdparty-releases</id>
+            <name>JBoss Thirdparty Releases</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+        </repository>
+    </repositories>
 
 </project>
