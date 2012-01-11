@@ -29,7 +29,7 @@ public abstract class GooglePlusConnector<T> extends Connector {
     // Constant value used for pagination : number of results per page.
     protected static final Long PAGINATION_SIZE = 10L;
     // Constant value used for search : max number of results.
-    protected static final Long MAX_SEARCH_VALUES = 10L;
+    protected static final Long MAX_SEARCH_VALUES = Long.MAX_VALUE;
 
     // Basic attributes for all connectors. See : https://developers.google.com/+/api/
     private String apiKey; // key

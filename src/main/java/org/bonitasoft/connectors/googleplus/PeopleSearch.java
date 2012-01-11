@@ -19,10 +19,15 @@ public class PeopleSearch extends GooglePlusConnector<List<Person>> {
     // Full-text search query string.
     private String query;
     // Max number of results
-    private Long maxResults = MAX_SEARCH_VALUES;
+    private Long maxResults;
 
     @Override
     protected List<Person> executeAction(Plus plus) throws Exception {
+        // Check maxResults value
+        if (maxResults == null) {
+            maxResults = MAX_SEARCH_VALUES;
+        }
+
         // Execute People:search query
         Plus.People.Search searchPeople = plus.people().search();
         searchPeople.setQuery(query);
@@ -33,7 +38,7 @@ public class PeopleSearch extends GooglePlusConnector<List<Person>> {
         // Manage pagination
         List<Person> finalResult = new ArrayList<Person>();
         Integer finalResultSize = 0;
-        do {
+        while (people != null && finalResultSize < maxResults) {
             // Add page results to final result
             finalResult.addAll(people);
             finalResultSize += people.size();
@@ -50,8 +55,7 @@ public class PeopleSearch extends GooglePlusConnector<List<Person>> {
             // Execute and process the next page request
             peopleFeed = searchPeople.execute();
             people = peopleFeed.getItems();
-
-        } while (finalResultSize < maxResults);
+        }
 
         // Keep only the 'maxResults' people.
         if (finalResult.size() > maxResults) {
