@@ -1,122 +1,114 @@
 package org.bonitasoft.connectors.googleplus;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.ow2.bonita.connector.core.ConnectorError;
-import org.ow2.bonita.connector.core.ProcessConnector;
 
-public class ActivitiesList extends ProcessConnector {
+import com.google.api.services.plus.Plus;
+import com.google.api.services.plus.model.Activity;
+import com.google.api.services.plus.model.ActivityFeed;
 
-	// Google+ API URLs
-	private static final String GOOGLEPLUS_API_URL = "https://www.googleapis.com/plus/v1/people/";
-	private static final String GOOGLEPLUS_API_KEY_PARAM = "?key=";
-	private static final String GOOGLEPLUS_API_FIELDS_PARAM = "&fields=";
-	private static final String GOOGLEPLUS_API_MAXRESULTS_PARAM = "&maxResults=";
-	private static final String GOOGLEPLUS_API_COLLECTION_VALUE = "/activities/public";
+public class ActivitiesList extends GooglePlusConnector {
 
-	// JSON response body
-	private java.lang.String jsonResponse;
-	// DO NOT REMOVE NOR RENAME THIS FIELD
-	private java.lang.String userId;
-	// DO NOT REMOVE NOR RENAME THIS FIELD
-	private java.lang.Long maxResults = 20L;
-	// DO NOT REMOVE NOR RENAME THIS FIELD
-	private java.lang.String apiKey;
-	// DO NOT REMOVE NOR RENAME THIS FIELD
-	private java.lang.String fields;
+    // The ID of the user to get activities for. The special value "me" can be used to indicate the authenticated user.
+    private String userId;
+    // The collection of activities to list.
+    private String collection;
+    // Max number of results
+    private Long maxResults;
+    // Connector result
+    private List<Activity> result;
 
-	@Override
-	protected void executeConnector() throws Exception {
-		// Create the HTTP query
-		String query = GOOGLEPLUS_API_URL + userId
-				+ GOOGLEPLUS_API_COLLECTION_VALUE + GOOGLEPLUS_API_KEY_PARAM
-				+ apiKey + GOOGLEPLUS_API_MAXRESULTS_PARAM + maxResults;
-		if (fields != null && !"".equals(fields)) {
-			query += GOOGLEPLUS_API_FIELDS_PARAM + fields;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void executeConnector() throws Exception {
+        Plus plus = getPlusClient();
 
-		// Execute GET http request
-		URL url = new URL(query);
-		URLConnection conn = url.openConnection();
+        // Check maxResults value
+        if (maxResults == null) {
+            maxResults = MAX_SEARCH_VALUES;
+        }
 
-		// Get the response
-		BufferedReader rd = new BufferedReader(new InputStreamReader(
-				conn.getInputStream()));
-		StringBuffer sb = new StringBuffer();
-		String line;
-		while ((line = rd.readLine()) != null) {
-			sb.append(line);
-		}
-		rd.close();
-		jsonResponse = sb.toString();
-	}
+        // Execute People:listByActivity query
+        Plus.Activities.List listActivities = plus.activities().list(userId, collection);
+        listActivities.setMaxResults(PAGINATION_SIZE);
+        ActivityFeed activityFeed = listActivities.execute();
+        List<Activity> activities = activityFeed.getItems();
 
-	@Override
-	protected List<ConnectorError> validateValues() {
-		List<ConnectorError> errors = new ArrayList<ConnectorError>();
-		if (userId == null || !userId.matches("me|[0-9]+")) {
-			errors.add(new ConnectorError("userId",
-					new IllegalArgumentException(
-							"userId is not valid ! It must match : me|[0-9]+")));
-		}
-		if (apiKey == null) {
-			errors.add(new ConnectorError("apiKey",
-					new IllegalArgumentException("apiKey is not valid !")));
-		}
-		if (maxResults <= 0 || maxResults > 100) {
-			errors.add(new ConnectorError(
-					"maxResults",
-					new IllegalArgumentException(
-							"maxResults is not valid ! Values must be within the range: [1, 100]")));
-		}
-		return errors;
-	}
+        // Manage pagination
+        result = new ArrayList<Activity>();
+        Integer finalResultSize = 0;
+        while (activities != null && finalResultSize < maxResults) {
+            // Add page results to final result
+            result.addAll(activities);
+            finalResultSize += activities.size();
 
-	/**
-	 * Setter for input argument 'userId' DO NOT REMOVE NOR RENAME THIS SETTER,
-	 * unless you also change the related entry in the XML descriptor file
-	 */
-	public void setUserId(java.lang.String userId) {
-		this.userId = userId;
-	}
+            // We will know we are on the last page when the next page token is null.
+            // If this is the case, break.
+            if (activityFeed.getNextPageToken() == null) {
+                break;
+            }
 
-	/**
-	 * Setter for input argument 'maxResults' DO NOT REMOVE NOR RENAME THIS
-	 * SETTER, unless you also change the related entry in the XML descriptor
-	 * file
-	 */
-	public void setMaxResults(java.lang.Long maxResults) {
-		this.maxResults = maxResults;
-	}
+            // Prepare the next page of results
+            listActivities.setPageToken(activityFeed.getNextPageToken());
 
-	/**
-	 * Setter for input argument 'apiKey' DO NOT REMOVE NOR RENAME THIS SETTER,
-	 * unless you also change the related entry in the XML descriptor file
-	 */
-	public void setApiKey(java.lang.String apiKey) {
-		this.apiKey = apiKey;
-	}
+            // Execute and process the next page request
+            activityFeed = listActivities.execute();
+            activities = activityFeed.getItems();
+        }
 
-	/**
-	 * Setter for input argument 'fields' DO NOT REMOVE NOR RENAME THIS SETTER,
-	 * unless you also change the related entry in the XML descriptor file
-	 */
-	public void setFields(java.lang.String fields) {
-		this.fields = fields;
-	}
+        // Keep only the 'maxResults' people.
+        if (result.size() > maxResults) {
+            result = result.subList(0, maxResults.intValue());
+        }
+    }
 
-	/**
-	 * Getter for output argument 'response' DO NOT REMOVE NOR RENAME THIS
-	 * GETTER, unless you also change the related entry in the XML descriptor
-	 * file
-	 */
-	public String getResponse() {
-		return jsonResponse;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected List<ConnectorError> validateActionValues() {
+        List<ConnectorError> errors = new ArrayList<ConnectorError>();
+
+        // Check maxResults
+        if (maxResults != null && maxResults <= 0) {
+            errors.add(new ConnectorError("maxResults", new IllegalArgumentException("maxResults must be greater than 0 !")));
+        }
+
+        // For 'collection', acceptable values are:
+        // -> "public" - All public activities created by the specified user.
+        if (!"public".equalsIgnoreCase(collection)) {
+            errors.add(new ConnectorError("collection", new IllegalArgumentException("Acceptable values are 'public'")));
+        }
+
+        // Check userId
+        if (userId == null || !userId.matches("me|[0-9]+")) {
+            errors.add(new ConnectorError("userId", new IllegalArgumentException("userId is not valid ! It must match : me|[0-9]+")));
+        }
+
+        return errors;
+    }
+
+    /*
+     * Getters and setters
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setCollection(String collection) {
+        this.collection = collection;
+    }
+
+    public void setMaxResults(Long maxResults) {
+        this.maxResults = maxResults;
+    }
+
+    public List<Activity> getResult() {
+        return result;
+    }
 
 }
