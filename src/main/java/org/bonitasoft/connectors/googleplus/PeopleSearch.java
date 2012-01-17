@@ -31,7 +31,7 @@ public class PeopleSearch extends GooglePlusConnector<List<Person>> {
         // Execute People:search query
         Plus.People.Search searchPeople = plus.people().search();
         searchPeople.setQuery(query);
-        searchPeople.setMaxResults(Long.valueOf(PAGINATION_SIZE));
+        searchPeople.setMaxResults(PAGINATION_SIZE);
         PeopleFeed peopleFeed = searchPeople.execute();
         List<Person> people = peopleFeed.getItems();
 

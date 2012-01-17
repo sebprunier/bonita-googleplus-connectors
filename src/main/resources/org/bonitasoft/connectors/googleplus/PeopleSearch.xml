@@ -38,7 +38,6 @@
         </setter>
         <setter>
             <setterName>setMaxResults</setterName>
-            <required></required>
             <parameters>
                 <long>10</long>
             </parameters>

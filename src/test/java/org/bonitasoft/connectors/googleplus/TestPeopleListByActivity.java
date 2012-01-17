@@ -10,42 +10,56 @@ import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
 
 /**
- * Test class for PeopleSearch connector.
+ * Test class for PeopleListByActivity connector.
  * 
  * @author sebastien.prunier
  */
-public class TestPeopleSearch extends TestBase {
+public class TestPeopleListByActivity extends TestBase {
 
     @Test
     public void testExecuteAction() throws Exception {
         Plus plus = getPlusClient(getApiKey(), null);
 
-        PeopleSearch connector = new PeopleSearch();
-        connector.setQuery("Sébastien PRUNIER");
+        PeopleListByActivity connector = new PeopleListByActivity();
+        connector.setActivityId("z13awn1hmy2lzrv3n23hit5juybght31j");
+        connector.setCollection("plusoners");
         List<Person> people = connector.executeAction(plus);
+        Assert.assertTrue(people.size() >= 1);
+
+        connector.setCollection("resharers");
+        people = connector.executeAction(plus);
         Assert.assertTrue(people.size() >= 1);
     }
 
     @Test
     public void testValidateActionValues() {
-        PeopleSearch connector = new PeopleSearch();
+        PeopleListByActivity connector = new PeopleListByActivity();
 
-        // Test with a negative maxValue
+        // Test with a negative maxValue and a valid collection
         connector.setMaxResults(-1L);
+        connector.setCollection("plusoners");
         List<ConnectorError> errors = connector.validateActionValues();
         Assert.assertEquals(1, errors.size());
         ConnectorError error = errors.get(0);
         checkErrorOnField(error, "maxResults");
 
-        // Test with a null maxResults value
+        // Test with a null maxResults value and a valid collection
         connector.setMaxResults(null);
         errors = connector.validateActionValues();
         checkEmptyErrorList(errors);
 
-        // Test with a valid maxResults value
+        // Test with a valid maxResults value and a valid collection
         connector.setMaxResults(20L);
+        connector.setCollection("resharers");
         errors = connector.validateActionValues();
         checkEmptyErrorList(errors);
+
+        // Test with a valid maxResults and a wrong collection
+        connector.setCollection("xxx");
+        errors = connector.validateActionValues();
+        Assert.assertEquals(1, errors.size());
+        error = errors.get(0);
+        checkErrorOnField(error, "collection");
     }
 
 }
