@@ -54,6 +54,7 @@
                     <include>**/PeopleListByActivity.*</include>
                     <include>**/ActivitiesGet.*</include>
                     <include>**/ActivitiesList.*</include>
+                    <include>**/ActivitiesSearch.*</include>
                 </includes>
             </resource>
         </resources>
@@ -74,6 +75,7 @@
                         <include>**/PeopleListByActivity.java</include>
                         <include>**/ActivitiesGet.java</include>
                         <include>**/ActivitiesList.java</include>
+                        <include>**/ActivitiesSearch.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -91,6 +93,7 @@
                         <include>**/TestPeopleListByActivity.java</include>
                         <include>**/TestActivitiesGet.java</include>
                         <include>**/TestActivitiesList.java</include>
+                        <include>**/TestActivitiesSearch.java</include>
                     </includes>
                 </configuration>
             </plugin>
