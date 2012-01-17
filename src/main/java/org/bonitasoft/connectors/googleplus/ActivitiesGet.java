@@ -1,102 +1,56 @@
 package org.bonitasoft.connectors.googleplus;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.ow2.bonita.connector.core.ConnectorError;
-import org.ow2.bonita.connector.core.ProcessConnector;
 
-public class ActivitiesGet extends ProcessConnector {
+import com.google.api.services.plus.Plus;
+import com.google.api.services.plus.model.Activity;
 
-	// Google+ API URLs
-	private static final String GOOGLEPLUS_API_URL = "https://www.googleapis.com/plus/v1/activities/";
-	private static final String GOOGLEPLUS_API_KEY_PARAM = "?key=";
-	private static final String GOOGLEPLUS_API_FIELDS_PARAM = "&fields=";
+/**
+ * Bonita connector for service Activities:get.
+ * 
+ * @author sebastien.prunier
+ */
+public class ActivitiesGet extends GooglePlusConnector {
 
-	// JSON response body
-	private java.lang.String jsonResponse;
-	// DO NOT REMOVE NOR RENAME THIS FIELD
-	private java.lang.String activityId;
-	// DO NOT REMOVE NOR RENAME THIS FIELD
-	private java.lang.String apiKey;
-	// DO NOT REMOVE NOR RENAME THIS FIELD
-	private java.lang.String fields;
+    // The ID of the activity to get.
+    private String activityId;
+    // Connector result
+    private Activity result;
 
-	@Override
-	protected void executeConnector() throws Exception {
-		// Create the HTTP query
-		String query = GOOGLEPLUS_API_URL + activityId
-				+ GOOGLEPLUS_API_KEY_PARAM + apiKey;
-		if (fields != null && !"".equals(fields)) {
-			query += GOOGLEPLUS_API_FIELDS_PARAM + fields;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void executeConnector() throws Exception {
+        Plus plus = getPlusClient();
+        result = plus.activities().get(activityId).execute();
+    }
 
-		// Execute GET http request
-		URL url = new URL(query);
-		URLConnection conn = url.openConnection();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected List<ConnectorError> validateActionValues() {
+        List<ConnectorError> errors = new ArrayList<ConnectorError>();
 
-		// Get the response
-		BufferedReader rd = new BufferedReader(new InputStreamReader(
-				conn.getInputStream()));
-		StringBuffer sb = new StringBuffer();
-		String line;
-		while ((line = rd.readLine()) != null) {
-			sb.append(line);
-		}
-		rd.close();
-		jsonResponse = sb.toString();
+        if (activityId == null || "".equals(activityId)) {
+            errors.add(new ConnectorError("activityId", new IllegalArgumentException("activityId is not valid !")));
+        }
 
-	}
+        return errors;
+    }
 
-	@Override
-	protected List<ConnectorError> validateValues() {
-		List<ConnectorError> errors = new ArrayList<ConnectorError>();
-		if (activityId == null) {
-			errors.add(new ConnectorError("userId",
-					new IllegalArgumentException("userId is not valid !")));
-		}
-		if (apiKey == null) {
-			errors.add(new ConnectorError("apiKey",
-					new IllegalArgumentException("apiKey is not valid !")));
-		}
-		return errors;
-	}
+    /*
+     * Getters and Setters
+     */
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
 
-	/**
-	 * Getter for output argument 'response' DO NOT REMOVE NOR RENAME THIS
-	 * GETTER, unless you also change the related entry in the XML descriptor
-	 * file
-	 */
-	public String getResponse() {
-		return jsonResponse;
-	}
-
-	/**
-	 * Setter for input argument 'activityId'
-	 * DO NOT REMOVE NOR RENAME THIS SETTER, unless you also change the related entry in the XML descriptor file
-	 */
-	public void setActivityId(java.lang.String activityId) {
-		this.activityId = activityId;
-	}
-
-	/**
-	 * Setter for input argument 'apiKey'
-	 * DO NOT REMOVE NOR RENAME THIS SETTER, unless you also change the related entry in the XML descriptor file
-	 */
-	public void setApiKey(java.lang.String apiKey) {
-		this.apiKey = apiKey;
-	}
-
-	/**
-	 * Setter for input argument 'fields'
-	 * DO NOT REMOVE NOR RENAME THIS SETTER, unless you also change the related entry in the XML descriptor file
-	 */
-	public void setFields(java.lang.String fields) {
-		this.fields = fields;
-	}
-
+    public Activity getResult() {
+        return result;
+    }
 }
