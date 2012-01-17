@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.ow2.bonita.connector.core.ConnectorError;
 
-import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
 
 /**
@@ -17,13 +16,14 @@ import com.google.api.services.plus.model.Person;
 public class TestPeopleGet extends TestBase {
 
     @Test
-    public void testExecuteAction() throws Exception {
-        Plus plus = getPlusClient(getApiKey(), null);
+    public void testExecuteConnector() throws Exception {
 
         PeopleGet connector = new PeopleGet();
+        connector.setApiKey(getApiKey());
         connector.setUserId("101859091162395481354");
 
-        Person me = connector.executeAction(plus);
+        connector.executeConnector();
+        Person me = connector.getResult();
 
         Assert.assertNotNull(me);
         Assert.assertEquals("Sébastien PRUNIER", me.getDisplayName());

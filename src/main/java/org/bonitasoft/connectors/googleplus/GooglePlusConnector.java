@@ -24,7 +24,7 @@ import com.google.api.services.plus.PlusRequest;
  * @param <T>
  *            the type of the connector's result.
  */
-public abstract class GooglePlusConnector<T> extends Connector {
+public abstract class GooglePlusConnector extends Connector {
 
     // Constant value used for pagination : number of results per page.
     protected static final Long PAGINATION_SIZE = 10L;
@@ -36,14 +36,7 @@ public abstract class GooglePlusConnector<T> extends Connector {
     private String fields; // fields
     private String resultRepresentationType; // alt
 
-    // Connector result.
-    private T result;
-
-    /**
-     * Executes the connector.
-     */
-    @Override
-    protected void executeConnector() throws Exception {
+    protected final Plus getPlusClient() throws Exception {
         JsonFactory jsonFactory = new GsonFactory();
         HttpTransport httpTransport = new NetHttpTransport();
 
@@ -62,22 +55,8 @@ public abstract class GooglePlusConnector<T> extends Connector {
         Plus.Builder builder = Plus.builder(httpTransport, jsonFactory);
         builder.setJsonHttpRequestInitializer(jsonHttpRequestInitializer);
 
-        Plus plus = builder.build();
-
-        result = executeAction(plus);
+        return builder.build();
     }
-
-    /**
-     * Executes the API Call, using the given Google+ client.<br>
-     * This method must be implemented by subclasses (Concrete connectors).
-     * 
-     * @param plus
-     *            the Google+ client.
-     * @return the connector result.
-     * @throws Exception
-     *             if an error occurred.
-     */
-    protected abstract T executeAction(Plus plus) throws Exception;
 
     /**
      * Validate input values.
@@ -120,7 +99,4 @@ public abstract class GooglePlusConnector<T> extends Connector {
         this.resultRepresentationType = resultRepresentationType;
     }
 
-    public T getResult() {
-        return result;
-    }
 }

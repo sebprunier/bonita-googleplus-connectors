@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.ow2.bonita.connector.core.ConnectorError;
 
-import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
 
 /**
@@ -18,11 +17,12 @@ public class TestPeopleSearch extends TestBase {
 
     @Test
     public void testExecuteAction() throws Exception {
-        Plus plus = getPlusClient(getApiKey(), null);
-
         PeopleSearch connector = new PeopleSearch();
+        connector.setApiKey(getApiKey());
+        
         connector.setQuery("Sébastien PRUNIER");
-        List<Person> people = connector.executeAction(plus);
+        connector.executeConnector();
+        List<Person> people = connector.getResult();
         Assert.assertTrue(people.size() >= 1);
     }
 

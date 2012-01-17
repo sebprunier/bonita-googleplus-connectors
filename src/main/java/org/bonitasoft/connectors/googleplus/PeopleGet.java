@@ -13,17 +13,20 @@ import com.google.api.services.plus.model.Person;
  * 
  * @author sebastien.prunier
  */
-public class PeopleGet extends GooglePlusConnector<Person> {
+public class PeopleGet extends GooglePlusConnector {
 
     // The ID of the person to get the profile for. The special value "me" can be used to indicate the authenticated user.
     private String userId;
+    // Connector result
+    private Person result;
 
     /**
-     * {@inheritDoc}
+     * Executes the connector.
      */
     @Override
-    protected Person executeAction(Plus plus) throws Exception {
-        return plus.people().get(userId).execute();
+    protected void executeConnector() throws Exception {
+        Plus plus = getPlusClient();
+        result = plus.people().get(userId).execute();
     }
 
     /**
@@ -43,6 +46,10 @@ public class PeopleGet extends GooglePlusConnector<Person> {
      */
     public void setUserId(java.lang.String userId) {
         this.userId = userId;
+    }
+
+    public Person getResult() {
+        return result;
     }
 
 }

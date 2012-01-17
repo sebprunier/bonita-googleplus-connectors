@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.ow2.bonita.connector.core.ConnectorError;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
 
 /**
@@ -43,16 +42,22 @@ public class TestGooglePlusConnector extends TestBase {
     /*
      * Mock connector only used for testing.
      */
-    private static final class MockConnector extends GooglePlusConnector<Person> {
+    private static final class MockConnector extends GooglePlusConnector {
+
+        private Person result;
 
         @Override
-        protected Person executeAction(Plus plus) throws Exception {
-            return plus.people().get("101859091162395481354").execute();
+        protected void executeConnector() throws Exception {
+            result = getPlusClient().people().get("101859091162395481354").execute();
         }
 
         @Override
         protected List<ConnectorError> validateActionValues() {
             return null;
+        }
+
+        public Person getResult() {
+            return result;
         }
 
     }

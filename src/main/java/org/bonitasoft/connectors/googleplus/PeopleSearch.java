@@ -14,15 +14,22 @@ import com.google.api.services.plus.model.Person;
  * 
  * @author sebastien.prunier
  */
-public class PeopleSearch extends GooglePlusConnector<List<Person>> {
+public class PeopleSearch extends GooglePlusConnector {
 
     // Full-text search query string.
     private String query;
     // Max number of results
     private Long maxResults;
+    // Connector result
+    private List<Person> result;
 
+    /**
+     * Executes the connector.
+     */
     @Override
-    protected List<Person> executeAction(Plus plus) throws Exception {
+    protected void executeConnector() throws Exception {
+        Plus plus = getPlusClient();
+
         // Check maxResults value
         if (maxResults == null) {
             maxResults = MAX_SEARCH_VALUES;
@@ -36,11 +43,11 @@ public class PeopleSearch extends GooglePlusConnector<List<Person>> {
         List<Person> people = peopleFeed.getItems();
 
         // Manage pagination
-        List<Person> finalResult = new ArrayList<Person>();
+        result = new ArrayList<Person>();
         Integer finalResultSize = 0;
         while (people != null && finalResultSize < maxResults) {
             // Add page results to final result
-            finalResult.addAll(people);
+            result.addAll(people);
             finalResultSize += people.size();
 
             // We will know we are on the last page when the next page token is null.
@@ -58,11 +65,9 @@ public class PeopleSearch extends GooglePlusConnector<List<Person>> {
         }
 
         // Keep only the 'maxResults' people.
-        if (finalResult.size() > maxResults) {
-            finalResult = finalResult.subList(0, maxResults.intValue());
+        if (result.size() > maxResults) {
+            result = result.subList(0, maxResults.intValue());
         }
-
-        return finalResult;
     }
 
     @Override
@@ -86,5 +91,9 @@ public class PeopleSearch extends GooglePlusConnector<List<Person>> {
 
     public void setMaxResults(Long maxResults) {
         this.maxResults = maxResults;
+    }
+
+    public List<Person> getResult() {
+        return result;
     }
 }
