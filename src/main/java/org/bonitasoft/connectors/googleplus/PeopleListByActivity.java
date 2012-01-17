@@ -26,7 +26,7 @@ public class PeopleListByActivity extends GooglePlusConnector {
     private List<Person> result;
 
     /**
-     * Executes the connector.
+     * {@inheritDoc}
      */
     @Override
     protected void executeConnector() throws Exception {

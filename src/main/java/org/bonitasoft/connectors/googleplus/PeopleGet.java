@@ -21,7 +21,7 @@ public class PeopleGet extends GooglePlusConnector {
     private Person result;
 
     /**
-     * Executes the connector.
+     * {@inheritDoc}
      */
     @Override
     protected void executeConnector() throws Exception {

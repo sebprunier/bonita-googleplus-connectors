@@ -20,9 +20,6 @@ import com.google.api.services.plus.PlusRequest;
  * Base class for Google+ connectors.
  * 
  * @author sebastien.prunier
- * 
- * @param <T>
- *            the type of the connector's result.
  */
 public abstract class GooglePlusConnector extends Connector {
 
@@ -36,6 +33,13 @@ public abstract class GooglePlusConnector extends Connector {
     private String fields; // fields
     private String resultRepresentationType; // alt
 
+    /**
+     * Creates a Plus client. This method must be used by concrete subclasses.
+     * 
+     * @return a Plus client.
+     * @throws Exception
+     *             error while creating client.
+     */
     protected final Plus getPlusClient() throws Exception {
         JsonFactory jsonFactory = new GsonFactory();
         HttpTransport httpTransport = new NetHttpTransport();
