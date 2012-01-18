@@ -79,7 +79,7 @@
                     <labelId>commentId</labelId>
                     <setter reference="/connector/inputs/setter[4]" />
                     <size>40</size>
-                    <maxChar>40</maxChar>
+                    <maxChar>120</maxChar>
                 </text>
             </widgets>
         </page>
