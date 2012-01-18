@@ -6,7 +6,7 @@
 
     <groupId>org.bonitasoft.connectors</groupId>
     <artifactId>googleplus</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
 
     <name>BonitaGooglePlusConnectors</name>
     <description>GooglePlus Connectors For Bonita</description>
