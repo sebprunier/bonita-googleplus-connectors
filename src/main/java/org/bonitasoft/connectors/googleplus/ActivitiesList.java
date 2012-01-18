@@ -32,7 +32,7 @@ public class ActivitiesList extends GooglePlusConnector {
             maxResults = MAX_SEARCH_VALUES;
         }
 
-        // Execute People:listByActivity query
+        // Execute Activities:list query
         Plus.Activities.List listActivities = plus.activities().list(userId, collection);
         listActivities.setMaxResults(PAGINATION_SIZE);
         ActivityFeed activityFeed = listActivities.execute();
@@ -60,7 +60,7 @@ public class ActivitiesList extends GooglePlusConnector {
             activities = activityFeed.getItems();
         }
 
-        // Keep only the 'maxResults' people.
+        // Keep only the 'maxResults' activities.
         if (result.size() > maxResults) {
             result = result.subList(0, maxResults.intValue());
         }

@@ -29,7 +29,7 @@ public class ActivitiesSearch extends GooglePlusConnector {
             maxResults = MAX_SEARCH_VALUES;
         }
 
-        // Execute People:listByActivity query
+        // Execute Activities:search query
         Plus.Activities.Search searchActivities = plus.activities().search();
         searchActivities.setQuery(query);
         searchActivities.setOrderBy(orderBy);
@@ -59,7 +59,7 @@ public class ActivitiesSearch extends GooglePlusConnector {
             activities = activityFeed.getItems();
         }
 
-        // Keep only the 'maxResults' people.
+        // Keep only the 'maxResults' activities.
         if (result.size() > maxResults) {
             result = result.subList(0, maxResults.intValue());
         }
