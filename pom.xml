@@ -49,14 +49,14 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/GooglePlus.jpg</include>
-                    <include>**/PeopleGet.*</include>
-                    <include>**/PeopleSearch.*</include>
-                    <include>**/PeopleListByActivity.*</include>
-                    <include>**/ActivitiesGet.*</include>
-                    <include>**/ActivitiesList.*</include>
-                    <include>**/ActivitiesSearch.*</include>
-                    <include>**/CommentsGet.*</include>
-                    <include>**/CommentsList.*</include>
+                    <include>**/PeopleGet*.*</include>
+                    <include>**/PeopleSearch*.*</include>
+                    <include>**/PeopleListByActivity*.*</include>
+                    <include>**/ActivitiesGet*.*</include>
+                    <include>**/ActivitiesList*.*</include>
+                    <include>**/ActivitiesSearch*.*</include>
+                    <include>**/CommentsGet*.*</include>
+                    <include>**/CommentsList*.*</include>
                 </includes>
             </resource>
         </resources>
